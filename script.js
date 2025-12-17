@@ -54,6 +54,32 @@ function getProductFromURL() {
   const params = new URLSearchParams(window.location.search);
   return params.get("product");
 }
+function hideSearchBar() {
+  document.querySelector(".search-box").style.display = "none";
+}
+
+function renderSingleProduct(product) {
+  if (!product) {
+    container.innerHTML = "<p>Product not found</p>";
+    return;
+  }
+
+  const productURL = `https://mehrarupa003-cpu.github.io/vaibhavjewels/?product=${product.id}`;
+
+  const qrImg = `
+    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(productURL)}">
+  `;
+
+  container.innerHTML = `
+    <div style="max-width:500px;margin:30px auto;padding:20px;border:1px solid #ccc">
+      <h2>${product.name}</h2>
+      <p><strong>Product ID:</strong> ${product.id}</p>
+      <p><strong>Price:</strong> ${product.price}</p>
+      <p><strong>Metal:</strong> ${product.metal}</p>
+      <div>${qrImg}</div>
+    </div>
+  `;
+}
 
 
 /* SEARCH FUNCTION */
@@ -94,14 +120,18 @@ fetch(sheetURL)
 
   const productFromURL = getProductFromURL();
 
-  if (productFromURL) {
-    const filtered = products.filter(p =>
-      p.id.toUpperCase() === productFromURL.toUpperCase()
-    );
-    renderProducts(filtered);
-  } else {
-    renderProducts(products);
-  }
+if (productFromURL) {
+  hideSearchBar(); // 👈 hide search when QR scanned
+
+  const filtered = products.filter(p =>
+    p.id.toUpperCase() === productFromURL.toUpperCase()
+  );
+
+  renderSingleProduct(filtered[0]);
+} else {
+  renderProducts(products);
+}
+
 })
 
   .catch(error => {
@@ -109,6 +139,7 @@ fetch(sheetURL)
     container.innerHTML =
       "<p style='color:red;'>Failed to load product data</p>";
   });
+
 
 
 

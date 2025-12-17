@@ -50,6 +50,12 @@ function renderProducts(filteredProducts) {
   container.innerHTML = tableHTML;
 }
 
+function getProductFromURL() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get("product");
+}
+
+
 /* SEARCH FUNCTION */
 function searchProduct() {
   if (products.length === 0) return;
@@ -78,20 +84,31 @@ const sheetURL =
 
 fetch(sheetURL)
   .then(response => response.json())
-  .then(data => {
-    products = data.map(item => ({
-      id: item.id?.trim(),
-      name: item.name,
-      price: item.price,
-      metal: item.metal
-    }));
+.then(data => {
+  products = data.map(item => ({
+    id: item.id?.trim(),
+    name: item.name,
+    price: item.price,
+    metal: item.metal
+  }));
 
-    renderProducts(products); // LOAD AFTER DATA COMES
-  })
+  const productFromURL = getProductFromURL();
+
+  if (productFromURL) {
+    const filtered = products.filter(p =>
+      p.id.toUpperCase() === productFromURL.toUpperCase()
+    );
+    renderProducts(filtered);
+  } else {
+    renderProducts(products);
+  }
+})
+
   .catch(error => {
     console.error("Google Sheet Error:", error);
     container.innerHTML =
       "<p style='color:red;'>Failed to load product data</p>";
   });
+
 
 

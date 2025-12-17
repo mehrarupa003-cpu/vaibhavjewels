@@ -7,40 +7,46 @@ let products = [];
 const container = document.getElementById("product-container");
 
 /* RENDER PRODUCTS */
+
 function renderProducts(filteredProducts) {
   container.innerHTML = "";
 
   if (!filteredProducts || filteredProducts.length === 0) {
-    container.innerHTML = "<p style='text-align:center;'>No product found</p>";
+    container.innerHTML = "<p>No product found</p>";
     return;
   }
 
   let tableHTML = `
-    <table border="1" cellpadding="10" cellspacing="0">
-      <thead>
-        <tr>
-          <th>Product ID</th>
-          <th>Name</th>
-          <th>Price</th>
-          <th>Metal Type</th>
-        </tr>
-      </thead>
-      <tbody>
+    <table border="1" cellpadding="10">
+      <tr>
+        <th>Product ID</th>
+        <th>Name</th>
+        <th>Price</th>
+        <th>Metal</th>
+        <th>QR Code</th>
+      </tr>
   `;
 
   filteredProducts.forEach(p => {
+
+    const productURL = `https://mehrarupa003-cpu.github.io/vaibhavjewels/?product=${p.id}`;
+
+    const qrImg = `
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(productURL)}">
+    `;
+
     tableHTML += `
       <tr>
         <td>${p.id}</td>
         <td>${p.name}</td>
         <td>${p.price}</td>
         <td>${p.metal}</td>
+        <td>${qrImg}</td>
       </tr>
     `;
   });
 
-  tableHTML += "</tbody></table>";
-
+  tableHTML += "</table>";
   container.innerHTML = tableHTML;
 }
 
@@ -88,4 +94,4 @@ fetch(sheetURL)
       "<p style='color:red;'>Failed to load product data</p>";
   });
 
-const productURL = `https://mehrarupa003-cpu.github.io/vaibhavjewels/?product=${p.id}`;
+

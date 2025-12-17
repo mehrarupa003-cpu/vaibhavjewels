@@ -87,3 +87,5 @@ fetch(sheetURL)
     container.innerHTML =
       "<p style='color:red;'>Failed to load product data</p>";
   });
+
+const productURL = `https://mehrarupa003-cpu.github.io/vaibhavjewels/?product=${p.id}`;
